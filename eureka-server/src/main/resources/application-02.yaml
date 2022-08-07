@@ -1,0 +1,23 @@
+server:
+  port: 8802
+
+spring:
+  application:
+    name: eurekaserver
+
+eureka:
+  server:
+    enable-self-preservation: true
+    renewal-percent-threshold: 0.49
+  instance:
+    hostname: eureka02
+    lease-renewal-interval-in-seconds: 30
+  # 开启之前需要修改一下客户端设置（虽然是服务端
+  client:
+    # 由于我们是作为服务端角色，所以不需要获取服务端，改为false，默认为true
+    fetch-registry: false
+    # 暂时不需要将自己也注册到Eureka
+    register-with-eureka: false
+    # 将eureka服务端指向自己
+    service-url:
+      defaultZone: http://eureka01:8801/eureka
