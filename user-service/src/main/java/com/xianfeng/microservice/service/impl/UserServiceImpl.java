@@ -16,6 +16,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(int uid) {
+        System.out.println("调用用户服务");
         return userMapper.getUserById(uid);
     }
 }
