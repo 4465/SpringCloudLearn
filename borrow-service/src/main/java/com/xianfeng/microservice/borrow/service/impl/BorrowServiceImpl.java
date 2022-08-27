@@ -3,6 +3,8 @@ package com.xianfeng.microservice.borrow.service.impl;
 import com.xianfeng.microservice.borrow.entity.UserBorrowDetail;
 import com.xianfeng.microservice.borrow.mapper.BorrowMappper;
 import com.xianfeng.microservice.borrow.service.BorrowService;
+import com.xianfeng.microservice.borrow.service.client.BookClient;
+import com.xianfeng.microservice.borrow.service.client.UserClient;
 import com.xianfeng.microservice.entity.Book;
 import com.xianfeng.microservice.entity.Borrow;
 import com.xianfeng.microservice.entity.User;
@@ -20,18 +22,21 @@ public class BorrowServiceImpl implements BorrowService {
     BorrowMappper borrowMappper;
 
     @Resource
-    RestTemplate restTemplate;
+    UserClient userClient;
+
+    @Resource
+    BookClient bookClient;
 
     @Override
     public UserBorrowDetail getUserBorrowDetailByUid(int uid) {
         List<Borrow> borrows = borrowMappper.getBorrowsByUid(uid);
 
 
-        User user = restTemplate.getForObject("http://user-service/user/" + uid, User.class);
+        User user = userClient.getUserById(uid);
 
         List<Book> bookList = borrows.
                 stream().
-                map(b -> restTemplate.getForObject("http://book-service/book/" + b.getBid(), Book.class)).
+                map(b -> bookClient.getBookById(b.getBid())).
                 collect(Collectors.toList());
         return new UserBorrowDetail(user, bookList);
     }
